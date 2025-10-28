@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
+import { useState } from "react";
 
 export default function CheckoutForm({ total, clearCart }) {
   const navigate = useNavigate(); 
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,18 +19,21 @@ export default function CheckoutForm({ total, clearCart }) {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+      const res = await axios.post("http://localhost:5000/api/order/createCheckout", orderData, {
+        headers: { "Content-Type": "application/json" }
       });
+      
+      if(res.data.status === 'success'){
+       setIsLoading(true)
+       
+        setTimeout(() => {
+          navigate("/order-status"); 
+          setIsLoading(false)
+          clearCart();
+        },3000)
+      }
 
-      const data = await res.json();
-      console.log(data);
-
-      clearCart();
-
-      navigate("/order-status"); 
+      
     } catch (err) {
       console.error(err);
       alert("Failed to place order. Please try again.");
@@ -42,8 +48,8 @@ export default function CheckoutForm({ total, clearCart }) {
       <input type="number" placeholder="Phone Number" required className="border p-2 w-full mb-3 rounded" />
       <input type="text" placeholder="Shipping Address" required className="border p-2 w-full mb-3 rounded" />
       <p className="text-right font-semibold mb-3">Total: ${total.toFixed(2)}</p>
-      <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">
-        Place Order
+      <button type="submit" className="w-full cursor-pointer bg-green-600 text-white py-2 rounded-md hover:bg-green-700">
+        {isLoading ? 'Please wait...' : 'Place Order'}
       </button>
     </form>
   );

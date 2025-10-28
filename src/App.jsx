@@ -5,11 +5,14 @@ import Cart from "./components/Cart";
 import CheckoutForm from "./components/CheckoutForm";
 import OrderStatus from "./components/OrderStatus"; 
 import { products as productData } from "./data/products"; 
+import axios from 'axios'
 
 
 export default function App() {
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
   const cartRef = useRef(null);
+  const [orders, setOrders] = useState([]);
+
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -47,6 +50,20 @@ export default function App() {
   const removeFromCart = (id) => setCart(cart.filter((item) => item.id !== id));
   const clearCart = () => setCart([]);
   const total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.qty || 0), 0);
+
+
+  useEffect(() => {
+    const getAllOrders = async () => {
+      try{
+        const result = await axios.get('http://localhost:5000/api/order/orders')
+        console.log(result)
+        setOrders(result.data)
+      } catch(error){
+        console.error(error)
+      }
+    }
+    getAllOrders()
+  },[])
 
   return (
     <Router>
