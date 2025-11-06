@@ -49,14 +49,6 @@ export const products = [
     image: TVImg,
   },
 
-  {
-    id: 6,
-    name: "Hisense SmartTV",
-    price: 9999,
-    description: "Allowing you to stream movies, watch videos, and even play games without needing extra devices",
-    image: TVImg,
-  },
-
   
 
 ];

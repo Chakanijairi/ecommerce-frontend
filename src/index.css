@@ -4,4 +4,6 @@ body {
   background-color: black; 
   color: #1f2937;            
   font-family: system-ui, sans-serif;
+  scroll-behavior: smooth;
 }
+
