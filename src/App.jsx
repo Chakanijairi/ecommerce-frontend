@@ -134,7 +134,7 @@ const savedProducts = JSON.parse(localStorage.getItem("editedProducts")) || prod
               <h2 className="text-blue-600 text-2xl font-semibold mb-2">
                 About
               </h2>
-              <p className="text-blue-600">
+              <p className="text-white">
                 Together by Shaw is a fun and creative e-commerce platform built
                 with passion for both technology and great design. We believe
                 shopping should be more than just buying things, it should be an
