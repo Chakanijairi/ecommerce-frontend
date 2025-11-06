@@ -137,7 +137,7 @@ const savedProducts = JSON.parse(localStorage.getItem("editedProducts")) || prod
               <p className="text-blue-600">
                 Together by Shaw is a fun and creative e-commerce platform built
                 with passion for both technology and great design. We believe
-                shopping should be more than just buying things—it should be an
+                shopping should be more than just buying things, it should be an
                 experience that connects people, inspires creativity, and brings
                 communities together. Here, we aim to offer high-quality
                 products that fit your modern lifestyle while giving you a
