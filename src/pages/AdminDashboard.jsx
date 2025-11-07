@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { UPLOAD } from "../api/client";
 
 const PAGE_SIZE = 5;
 
@@ -367,7 +368,7 @@ export default function AdminDashboard() {
                       <td className="px-4 py-2 font-medium flex items-center gap-3">
                         {product.imageUrl && (
                           <img
-                            src={product.imageUrl}
+                            src={UPLOAD + product.imageUrl}
                             alt={product.name}
                             className="w-10 h-10 object-cover rounded"
                           />
