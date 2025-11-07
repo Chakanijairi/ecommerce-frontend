@@ -12,7 +12,7 @@ export default function ProductList({ addToCart, products = defaultProducts }) {
         name={p.name}
         price={p.price}
         description={p.description}
-        image={p.image}
+        image={p.imageUrl}
         onAddToCart={() => addToCart(p.id)}
       />
     ))

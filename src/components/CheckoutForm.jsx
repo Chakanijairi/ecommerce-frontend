@@ -1,10 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import apiClient from "../api/client";
+import { useAuth } from "../context/AuthContext";
 
-export default function CheckoutForm({ total, clearCart }) {
+export default function CheckoutForm({ total, clearCart, cart = [] }) {
   const navigate = useNavigate(); 
   const [isLoading, setIsLoading] = useState(false)
+  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,12 +18,11 @@ export default function CheckoutForm({ total, clearCart }) {
       phone: form[2].value,
       address: form[3].value,
       total,
+      items: cart.map(({ id, name, price, qty }) => ({ id, name, price, qty })),
     };
 
     try {
-      const res = await axios.post("https://ecommerce-backend-lxq0.onrender.com/api/order/createCheckout", orderData, {
-        headers: { "Content-Type": "application/json" }
-      });
+      const res = await apiClient.post("/order/createCheckout", orderData);
       
       if(res.data.status === 'success'){
        setIsLoading(true)
@@ -39,6 +40,31 @@ export default function CheckoutForm({ total, clearCart }) {
       alert("Failed to place order. Please try again.");
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md mt-8 text-center">
+        <h2 className="text-2xl font-semibold mb-4">Login Required</h2>
+        <p className="text-gray-700 mb-4">
+          Please sign in or create an account to complete your purchase.
+        </p>
+        <div className="flex justify-center gap-4">
+          <Link
+            to="/login"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+          >
+            Register
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form className="bg-white p-6 rounded-lg shadow-md mt-8" onSubmit={handleSubmit}>
