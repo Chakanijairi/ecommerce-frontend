@@ -3,6 +3,7 @@ import { UPLOAD } from "../api/client";
 
 const ProductCard = ({ name, price, description, image, onAddToCart }) => {
   const img = image.split("/").pop()
+
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
       <img src={UPLOAD + img} alt={name} className="w-full h-48 object-cover" />
