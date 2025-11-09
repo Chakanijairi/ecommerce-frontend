@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import ProductList from "./components/ProductList";
 import Cart from "./components/Cart";
 import CheckoutForm from "./components/CheckoutForm";
@@ -14,13 +14,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apiClient from "./api/client";
 
+
 export default function App() {
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
   const token = localStorage.getItem("authToken");
-  
+  const navigate = useNavigate();
+  const { user, logout, isAuthenticated } = useAuth();
+  const cartRef = useRef(null);
+
   const normaliseProduct = useCallback(
     (product) => ({
       id: product._id || product.id,
@@ -32,33 +36,21 @@ export default function App() {
     []
   );
 
-  const cartRef = useRef(null);
-  // const [products, setProducts] = useState(() => {
-  //   const saved = localStorage.getItem("editedProducts");
-  //   return saved ? JSON.parse(saved) : productData;
-  // });
-  const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
-
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (id) => {
-    const product = products.find((p) => p.id === id); //new
+    const product = products.find((p) => p.id === id);
     if (!product) return;
 
     const existing = cart.find((item) => item.id === id);
-
     if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.id === id ? { ...item, qty: item.qty + 1 } : item
-        )
-      );
+      setCart(cart.map((item) =>
+        item.id === id ? { ...item, qty: item.qty + 1 } : item
+      ));
     } else {
       setCart([...cart, { ...product, qty: 1 }]);
-
       if (cart.length === 0) {
         setTimeout(() => {
           if (cartRef.current) {
@@ -104,81 +96,69 @@ export default function App() {
     return () => window.removeEventListener("productsUpdated", handler);
   }, []);
 
-
-
   const fetchProducts = useCallback(async () => {
     setProductsLoading(true);
     setProductsError(null);
-    
-    if(!token) {
-      console.log('no token')
+
+    if (!token) {
+      console.log("no token");
       return;
     }
 
-    
     try {
       const { data } = await apiClient.get("/products", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(data)
       setProducts(data.map(normaliseProduct));
     } catch (err) {
       const message = err.response?.data?.message || err.message || "Unable to load products";
       setProductsError(message);
-      console.log(message)
-      // toast.error(message);
+      console.log(message);
     } finally {
       setProductsLoading(false);
     }
-  }, [normaliseProduct]);
+  }, [normaliseProduct, token]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-  
-
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss={false} pauseOnHover theme="colored" />
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
       <Routes>
         <Route
           path="/"
           element={
-            <div className="max-w-6xl mx-auto p-6">
-              <header className="flex justify-between items-center mb-6 border-b pb-4">
-                <h1 className="text-3xl font-bold text-blue-600">
-                  Together by Shaw
-                </h1>
-                <div className="flex items-center gap-4">
-                  <nav className="hidden md:flex gap-6 text-blue-700">
-                    <a href="#about" className="hover:text-red-600">
-                      About
-                    </a>
-                    <a href="#shop" className="hover:text-red-600">
-                      Shop
-                    </a>
-                    <a href="#projects" className="hover:text-red-600">
-                      Projects
-                    </a>
+            <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-pink-100 to-purple-100 text-gray-800 overflow-hidden">
+              {/* Navbar */}
+              <header className="fixed top-0 w-full glass-effect z-50 backdrop-blur-md shadow-lg">
+                <div className="max-w-6xl mx-auto flex justify-between items-center px-8 py-4">
+                  <h1 className="text-3xl font-extrabold gradient-text-1 tracking-wide">
+                    Together by Shaw
+                  </h1>
+                  <nav className="hidden md:flex gap-6 text-gray-700 font-medium">
+                    <a href="#about" className="hover:gradient-text-1">About</a>
+                    <a href="#shop" className="hover:gradient-text-2">Shop</a>
+                    <a href="#projects" className="hover:gradient-text-3">Projects</a>
                   </nav>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {isAuthenticated ? (
                       <>
-                        <span className="text-sm text-blue-700">{user?.name}</span>
+                        <span className="text-sm font-medium text-indigo-600">{user?.name}</span>
                         {user?.role === "Admin" && (
                           <button
                             onClick={() => navigate("/admin")}
-                            className="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 transition"
+                            className="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover-scale"
                           >
                             Admin
                           </button>
                         )}
                         <button
                           onClick={logout}
-                          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                          className="px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white hover-scale"
                         >
                           Logout
                         </button>
@@ -187,64 +167,82 @@ export default function App() {
                       <>
                         <button
                           onClick={() => navigate("/login")}
-                          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
+                          className="px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover-scale"
                         >
                           Login
                         </button>
                         <button
                           onClick={() => navigate("/register")}
-                          className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition"
+                          className="px-4 py-2 rounded-full bg-gradient-to-r from-green-400 to-cyan-500 text-white hover-scale"
                         >
                           Register
                         </button>
                       </>
                     )}
-                  </div>
-                  <div className="p-2">
-                    <button className="fixed top-24 right-30 z-50 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-                      Cart ({cart.reduce((sum, item) => sum + (item.qty || 0), 0)})
+                    <button
+                      onClick={() => cartRef.current?.scrollIntoView({ behavior: "smooth" })}
+                      className="relative px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover-scale"
+                    >
+                      🛒 Cart
+                      <span className="absolute -top-2 -right-2 bg-pink-600 text-xs text-white rounded-full w-5 h-5 flex items-center justify-center">
+                        {cart.reduce((sum, item) => sum + (item.qty || 0), 0)}
+                      </span>
                     </button>
                   </div>
                 </div>
               </header>
 
-              <section id="about" className="bg-black p-6 rounded-lg shadow mb-8">
-                <h2 className="text-blue-600 text-2xl font-semibold mb-2">
-                  About
+              {/* Hero Section */}
+              <section className="flex flex-col items-center justify-center text-center pt-40 pb-24 px-6 animate-fadeIn">
+                <h2 className="text-5xl md:text-6xl font-extrabold mb-4 gradient-text-2 drop-shadow-lg">
+                  Discover. Shop. Enjoy.
                 </h2>
-                <p className="text-white">
-                  Together by Shaw is a fun and creative e-commerce platform built
-                  with passion for both technology and great design. We believe
-                  shopping should be more than just buying things, it should be an
-                  experience that connects people, inspires creativity, and brings
-                  communities together. Here, we aim to offer high-quality
-                  products that fit your modern lifestyle while giving you a
-                  smooth and enjoyable digital experience. Whether you’re looking
-                  for tech gear, gadgets, or stylish essentials, we’re here to
-                  make it simple, trustworthy, and exciting. At Together by Shaw,
-                  our goal is to blend innovation with connection, combining the
-                  best of technology, creativity, and community to make your
-                  online shopping journey truly special. 💙
+                <p className="text-lg text-gray-600 max-w-2xl mb-8">
+                  Explore premium products crafted for your lifestyle — tech, creativity, and community combined.
+                </p>
+                <button
+                  onClick={() => document.getElementById("shop").scrollIntoView({ behavior: "smooth" })}
+                  className="px-10 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-indigo-500 text-white font-semibold shadow-lg hover-scale hover-glow"
+                >
+                  Start Shopping
+                </button>
+              </section>
+
+              {/* About Section */}
+              <section id="about" className="max-w-5xl mx-auto bg-white/70 glass-effect rounded-3xl p-10 mb-16 shadow-xl animate-fadeIn">
+                <h2 className="text-3xl font-bold gradient-text-1 mb-4">About</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  Together by Shaw is a vibrant e-commerce experience blending innovation and design.
+                  We connect communities through creativity, offering high-quality products built for modern lifestyles.
+                  Every purchase supports a vision where technology meets art and passion meets purpose. 💙
                 </p>
               </section>
 
-              <section id="shop" className="scroll-mt-20 pt-4">
+              {/* Shop Section */}
+              <section id="shop" className="max-w-6xl mx-auto px-4 pb-10">
                 <ProductList addToCart={addToCart} products={products} />
               </section>
 
               <div className="my-10" />
 
-              <Cart
-                ref={cartRef}
-                cart={cart}
-                updateQty={updateQty}
-                removeFromCart={removeFromCart}
-                total={total}
-              />
+              {/* Cart Section */}
+              <div ref={cartRef}>
+                <Cart cart={cart} updateQty={updateQty} removeFromCart={removeFromCart} total={total} />
+              </div>
 
               {cart.length > 0 && (
                 <CheckoutForm total={total} clearCart={clearCart} cart={cart} />
               )}
+
+              {/* Footer */}
+              <footer className="mt-16 text-center py-10 glass-effect border-t border-white/40">
+                <p className="gradient-text-3 font-semibold">© 2025 Together by Shaw. All Rights Reserved.</p>
+                <div className="flex justify-center gap-6 mt-4 text-gray-500">
+                  <a href="#" className="hover:gradient-text-1">Facebook</a>
+                  <a href="#" className="hover:gradient-text-2">Instagram</a>
+                  <a href="#" className="hover:gradient-text-3">Twitter</a>
+                </div>
+              </footer>
             </div>
           }
         />

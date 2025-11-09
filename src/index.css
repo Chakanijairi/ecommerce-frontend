@@ -1,9 +1,157 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --gradient-1: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  --gradient-2: linear-gradient(135deg, #3b82f6, #2dd4bf, #34d399);
+  --gradient-3: linear-gradient(135deg, #f43f5e, #f59e0b, #eab308);
+}
+
 body {
-  background-color: black; 
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
   color: #1f2937;            
-  font-family: system-ui, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif;
   scroll-behavior: smooth;
+  min-height: 100vh;
+}
+
+/* Modern styling utilities */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.hover-scale {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.03) translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient text effect */
+.gradient-text-1 {
+  background: var(--gradient-1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text-2 {
+  background: var(--gradient-2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-text-3 {
+  background: var(--gradient-3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient borders */
+.gradient-border {
+  position: relative;
+  background: white;
+  padding: 3px;
+  border-radius: inherit;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--gradient-1);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Shimmer effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Hover glow effect */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatAnimation {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-float {
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+/* Card flip effect */
+.flip-card {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.flip-card:hover {
+  transform: rotateY(180deg);
+}
+
+/* Neon glow effects */
+.neon-glow {
+  box-shadow: 0 0 5px #6366f1,
+              0 0 15px #6366f1,
+              0 0 30px #6366f1;
+}
+
+/* Rainbow border animation */
+@keyframes rainbow-border {
+  0% { border-color: #6366f1; }
+  25% { border-color: #a855f7; }
+  50% { border-color: #ec4899; }
+  75% { border-color: #f43f5e; }
+  100% { border-color: #6366f1; }
+}
+
+.rainbow-border {
+  border: 2px solid transparent;
+  animation: rainbow-border 4s linear infinite;
 }
 
