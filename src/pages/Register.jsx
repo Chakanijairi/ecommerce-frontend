@@ -33,7 +33,15 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-cyan-100 to-blue-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-cyan-100 to-blue-100 p-6 relative">
+      {/* Back to Home Button */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 bg-white/70 backdrop-blur-md text-cyan-600 font-semibold px-4 py-2 rounded-full shadow hover:bg-cyan-50 transition flex items-center gap-1"
+      >
+        <span className="text-lg">←</span> Back to Home
+      </Link>
+
       <div className="glass-effect w-full max-w-4xl rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-fadeIn">
         {/* Left Section */}
         <div className="hidden lg:flex flex-col justify-center w-1/2 bg-gradient-to-br from-green-400 via-cyan-500 to-blue-500 text-white p-12 relative">

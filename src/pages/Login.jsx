@@ -6,6 +6,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [localError, setLocalError] = useState(null);
   const { login, loading, error, clearError, isAuthenticated, user } = useAuth();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +34,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-6 relative">
+      {/* Back to Home Button */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 bg-white/70 backdrop-blur-md text-indigo-600 font-semibold px-4 py-2 rounded-full shadow hover:bg-indigo-50 transition flex items-center gap-1"
+      >
+        <span className="text-lg">←</span> Back to Home
+      </Link>
+
       <div className="glass-effect w-full max-w-4xl rounded-3xl shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-fadeIn">
         {/* Left Section */}
         <div className="hidden lg:flex flex-col justify-center w-1/2 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white p-12 relative">
