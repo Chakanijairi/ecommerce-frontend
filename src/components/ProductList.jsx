@@ -17,7 +17,7 @@ export default function ProductList({ addToCart, products = defaultProducts }) {
       />
     ))
   ) : (
-    <div className="col-span-full text-center text-white italic py-20 text-lg">
+    <div className="col-span-full text-center text-black italic py-20 text-lg">
   🛒 No products yet!  
     </div>
   
