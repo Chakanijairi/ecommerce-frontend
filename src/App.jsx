@@ -4,10 +4,11 @@ import Cart from "./components/Cart";
 import CheckoutForm from "./components/CheckoutForm";
 import OrderStatus from "./components/OrderStatus";
 import { products as productData } from "./data/products";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate, Routes, Route, Link } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Contact from "./pages/Contact";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import { ToastContainer } from "react-toastify";
@@ -142,7 +143,7 @@ export default function App() {
                   <nav className="hidden md:flex gap-6 text-gray-700 font-medium">
                     <a href="#about" className="hover:gradient-text-1">About</a>
                     <a href="#shop" className="hover:gradient-text-2">Shop</a>
-                    <a href="#projects" className="hover:gradient-text-3">Projects</a>
+                    <Link to="/contact" className="hover:gradient-text-3">Contact Us</Link>
                   </nav>
                   <div className="flex items-center gap-3">
                     {isAuthenticated ? (
@@ -250,6 +251,7 @@ export default function App() {
         <Route path="/order-status" element={<OrderStatus />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/admin"
           element={
